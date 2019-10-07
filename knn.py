@@ -1,5 +1,6 @@
 import csv
 from pprint import pprint
+import random
 import math
 
 
@@ -9,6 +10,9 @@ def load_data_set(filename, k_fold=5):
         dataset = csv.reader((line.replace('    ', ' ').replace('   ', ' ').replace('  ', ' ').replace(' ', ',')
                               for line in csvfile))
         dataset_list = list(dataset)
+        # print(dataset_list)
+        random.shuffle(dataset_list)
+        # print(dataset_list)
         i = 0
         max_item = math.ceil(len(dataset_list)/k_fold)
         for line in dataset_list:
@@ -101,37 +105,41 @@ def get_majority_vote(data_neighbors):
 
 
 if __name__ == '__main__':
-    k = 10
+    k_start = 1
+    k_end = 25
     k_fold = 10
-    distance = 1
+    #distance_algo = 2
     # 1 euclidean, 2 manhattan, 3 cosine similarity, default euclidean
 
     dataset = load_data_set('yeast.data', k_fold)
 
-    total_accuracy = 0
-    for id_group in range(k_fold):
-        temp_data_trains = dataset.copy()
-        data_tests = temp_data_trains.pop(id_group)
-        data_trains = []
-        for group in temp_data_trains:
-            for item in group:
-                data_trains.append(item)
+    for distance_algo in range(1, 4):
+        for k in range(k_start, k_end+1):
+            total_accuracy = 0
+            for id_group in range(k_fold):
+                temp_data_trains = dataset.copy()
+                data_tests = temp_data_trains.pop(id_group)
+                data_trains = []
+                for group in temp_data_trains:
+                    for item in group:
+                        data_trains.append(item)
 
-        if id_group == 0:
-            print('Total data trains : ' + str(len(data_trains)))
-            print('Total data tests : ' + str(len(data_tests)))
-            print('Rasio data tests & data trains : 1:' + str(math.ceil(len(data_trains)/len(data_tests))))
+                if k == k_start and id_group == 0:
+                    print('Total data trains : ' + str(len(data_trains)))
+                    print('Total data tests : ' + str(len(data_tests)))
+                    print('Rasio data tests & data trains : 1:' + str(math.ceil(len(data_trains)/len(data_tests))))
 
-        correct = 0
-        for data_test in data_tests:
-            neighbors = get_neighbors(data_trains, data_test, k, distance)
-            class_test = data_test[-1]
-            class_predict = get_majority_vote(neighbors)
-            # print(neighbors)
-            # print('Test : ' + class_test)
-            # print('Predict : ' + class_predict)
-            correct += 1 if class_test == class_predict else 0
-        accuracy = correct/len(data_tests)
-        total_accuracy += accuracy
-        print('Akurasi ke-' + str(id_group+1) + ' : ' + str(accuracy*100) + " %")
-    print('Rata-rata akurasi : ' + str(total_accuracy/k_fold*100) + " %")
+                correct = 0
+                for data_test in data_tests:
+                    neighbors = get_neighbors(data_trains, data_test, k, distance_algo)
+                    class_test = data_test[-1]
+                    class_predict = get_majority_vote(neighbors)
+                    # print(neighbors)
+                    # print('Test : ' + class_test)
+                    # print('Predict : ' + class_predict)
+                    correct += 1 if class_test == class_predict else 0
+                accuracy = correct/len(data_tests)
+                total_accuracy += accuracy
+                # print('Akurasi ke-{0} : {1:.5f} %'.format(id_group+1, accuracy*100))
+            # print('k = {0}\tRata-rata akurasi : {1:.5f} %'.format(k, total_accuracy/k_fold*100))
+            print('{1:.5f}'.format(k, total_accuracy/k_fold*100))
