@@ -75,7 +75,11 @@ def get_neighbors(data_trains, data_test, k, distance_algo=1):
         else:
             distance = euclidean_distance(d_train, d_test)
         distances.append((data_trains[x], distance))
-    distances.sort(key=lambda tup: tup[1])
+
+    if distance_algo == 3:
+        distances.sort(key=lambda tup: tup[1], reverse=True)
+    else:
+        distances.sort(key=lambda tup: tup[1], reverse=False)
 
     for x in range(k):
         neighbors.append(distances[x])
