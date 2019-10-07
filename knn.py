@@ -42,11 +42,16 @@ def manhattan_distance(data1, data2):
 
 
 def cosine_similarity_distance(data1, data2):
-    distance = 0
     length = len(data1) if len(data1) < len(data2) else len(data2)
+    atas = 0
+    bawah_kiri = 0
+    bawah_kanan = 0
     for x in range(length):
-        distance += abs(data1[x] - data2[x])
-    return distance
+        atas += data1[x] * data2[x]
+        bawah_kiri += pow(data1[x], 2)
+        bawah_kanan += pow(data2[x], 2)
+    similarity = atas / (math.sqrt(bawah_kiri) * math.sqrt(bawah_kanan))
+    return similarity
 
 
 def get_neighbors(data_trains, data_test, k, distance_algo=1):
@@ -111,7 +116,7 @@ if __name__ == '__main__':
         if id_group == 0:
             print('Total data trains : ' + str(len(data_trains)))
             print('Total data tests : ' + str(len(data_tests)))
-            print('Total data tests : 1:' + str(math.ceil(len(data_trains)/len(data_tests))))
+            print('Rasio data tests & data trains : 1:' + str(math.ceil(len(data_trains)/len(data_tests))))
 
         correct = 0
         for data_test in data_tests:
@@ -124,5 +129,5 @@ if __name__ == '__main__':
             correct += 1 if class_test == class_predict else 0
         accuracy = correct/len(data_tests)
         total_accuracy += accuracy
-        print('Akurasi ke-' + str(id_group+1) + ' : ' + str(accuracy))
-    print('Rata-rata akurasi : ' + str(total_accuracy/k_fold))
+        print('Akurasi ke-' + str(id_group+1) + ' : ' + str(accuracy*100) + " %")
+    print('Rata-rata akurasi : ' + str(total_accuracy/k_fold*100) + " %")
