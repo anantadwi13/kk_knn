@@ -1,5 +1,4 @@
 import csv
-from pprint import pprint
 import random
 import math
 
@@ -125,9 +124,10 @@ if __name__ == '__main__':
                         data_trains.append(item)
 
                 if k == k_start and id_group == 0:
-                    print('Total data trains : ' + str(len(data_trains)))
-                    print('Total data tests : ' + str(len(data_tests)))
-                    print('Rasio data tests & data trains : 1:' + str(math.ceil(len(data_trains)/len(data_tests))))
+                    print('Distance algo : {0}'.format(distance_algo))
+                    print('Total data train : ' + str(len(data_trains)))
+                    print('Total data test : ' + str(len(data_tests)))
+                    print('Rasio data test & data train : 1:' + str(math.ceil(len(data_trains)/len(data_tests))))
 
                 correct = 0
                 for data_test in data_tests:
@@ -141,5 +141,5 @@ if __name__ == '__main__':
                 accuracy = correct/len(data_tests)
                 total_accuracy += accuracy
                 # print('Akurasi ke-{0} : {1:.5f} %'.format(id_group+1, accuracy*100))
-            # print('k = {0}\tRata-rata akurasi : {1:.5f} %'.format(k, total_accuracy/k_fold*100))
-            print('{1:.5f}'.format(k, total_accuracy/k_fold*100))
+            print('k = {0}\tRata-rata akurasi : {1:.5f} %'.format(k, total_accuracy/k_fold*100))
+            # print('{1:.5f}'.format(k, total_accuracy/k_fold*100))
