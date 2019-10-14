@@ -48,8 +48,7 @@ def accuracy_metric(actual, predicted):
 
 
 # Evaluate an algorithm using a cross validation split
-def evaluate_algorithm(dataset, algorithm, n_folds, *args):
-    folds = cross_validation_split(dataset, n_folds)
+def evaluate_algorithm(folds, algorithm, *args):
     scores = list()
     x = True
     for fold in folds:
@@ -109,7 +108,7 @@ def entropy(groups, classes, base):
                 classes_size[class_val] += size
             else:
                 classes_size[class_val] = size
-    for class_val, size in classes_size.items():
+    for class_val, size in classes_size.items ():
         if size != 0:
             entropy_parent -= math.log(size/n_instances, base) * size/n_instances
 
@@ -218,10 +217,20 @@ if __name__ == '__main__':
     n_folds = 5
     max_depth = 8
     min_size = 10
-    # METHOD_ENTROPY or METHOD_GINI
-    method = METHOD_ENTROPY
-    # log base for entropy method
-    base = 2
-    scores = evaluate_algorithm(dataset, decision_tree, n_folds, method, base, max_depth, min_size)
-    print('Scores: %s' % scores)
-    print('Mean Accuracy: %.3f%%' % (sum(scores) / float(len(scores))))
+    method = METHOD_ENTROPY     # METHOD_ENTROPY or METHOD_GINI
+    base = 2                    # log base for entropy method
+    folds = cross_validation_split(dataset, n_folds)
+    scores = evaluate_algorithm(folds, decision_tree, method, base, max_depth, min_size)
+    print('Metode : {0}'.format('Entropy' if method == METHOD_ENTROPY else 'Gini Index'))
+    print('Akurasi : %s' % scores)
+    print('Rata-rata Akurasi : %.3f%%' % (sum(scores) / float(len(scores))))
+
+    # Comparation
+    # scores = evaluate_algorithm(folds, decision_tree, METHOD_GINI, base, max_depth, min_size)
+    # print('Metode : Gini Index')
+    # print('Akurasi : %s' % scores)
+    # print('Rata-rata Akurasi : %.3f%%' % (sum(scores) / float(len(scores))))
+    # scores = evaluate_algorithm(folds, decision_tree, METHOD_ENTROPY, base, max_depth, min_size)
+    # print('Metode : Entropy')
+    # print('Akurasi : %s' % scores)
+    # print('Rata-rata Akurasi : %.3f%%' % (sum(scores) / float(len(scores))))
